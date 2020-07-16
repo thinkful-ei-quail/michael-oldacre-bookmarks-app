@@ -4,8 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Bookmark App</title>
+  <link href="main.css" rel="stylesheet" />
 </head>
+
 <body>
-  
+
+  <main>
+
+    <h1>My Bookmarks</h1>
+    <form>
+      <button type="submit" value="Submit">New</button>
+      <select id="filter" name="filter">
+        <option value="five">5 Star</option>
+        <option value="four">4 Star</option>
+        <option value="three">3 Star</option>
+        <option value="two">2 Start</option>
+        <option value="one">1 Start</option>
+      </select>
+    </form>
+
+    <ul class="bookmark-list">
+    </ul>
+
+  </main>
+
 </body>
+
 </html>

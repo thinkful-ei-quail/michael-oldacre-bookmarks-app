@@ -1,0 +1,24 @@
+.bookmark-list{
+  list-style: none;
+  padding-left: 0;  
+}
+
+.bookmark-list-item{
+  border: 1px solid black;
+}
+
+.rating{
+  display: inline;
+  position: relative;
+  padding-left: 35px;
+}
+
+span{
+  padding-right: 120px;
+}
+
+main{
+  display: flex;
+  flex-direction: column;
+
+}
