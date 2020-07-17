@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import './main.css';
 
 
 const STORE = {
@@ -58,7 +59,8 @@ function condensedBookmarkItem() {
 
   //const items = bookmarksStore.map((item, index) => generateCondensedBookmark(item, index));
 
-  return `<li>${STORE.bookmarks[0].title}</li>`;
+  return `<li class="bookmark-list-item">${STORE.bookmarks[0].title}
+  ${STORE.bookmarks[0].rating}</li>`;
   /* return `<li class="bookmark-list-item">
   <form><span>Test 1</span>
 
