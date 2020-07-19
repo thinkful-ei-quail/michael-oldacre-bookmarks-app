@@ -40,18 +40,16 @@ function getBookmarks() {
   return listApiFetch(`${BASE_URL}/bookmarks`);
 }
 
-function createBookmark(title, url) {
-  const newTitle = JSON.stringify({title});
-  const newUrl = JSON.stringify({url});
-  const newEntry = JSON.stringify({title, url});
+function createBookmark(title, url, desc, rating) { 
+  const newBookmark = JSON.stringify({ title, url, desc, rating});
 
-  console.log(newEntry);
-  
+  console.log(newBookmark);
+
   return listApiFetch(`${BASE_URL}/bookmarks`,
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: newEntry
+      body: newBookmark
     });
 }
 

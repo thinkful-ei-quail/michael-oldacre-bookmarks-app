@@ -13,21 +13,31 @@ const generateDefaultView = function () {
   <option value="three">3 Star</option>
   <option value="two">2 Start</option>
   <option value="one">1 Start</option>
+  <option value="clear">Clear</option>
 </select>
-</form>
-
-<ul class="bookmark-list">
-</ul>`;
+</form>`;
 
 };
 
 const generateBookmarkElement = function (bookmark) {
-  return `<li class="bookmark-list-item">
+  let rating = generateRatingStars(bookmark);
+
+  return `<li class="bookmark-list-item" data-item-id="${bookmark.id}">
   <span>${bookmark.title}</span>
-  <input name="expand" type="checkbox" id="expand">
-  <label for="expand">More  Details</label>
-  <p>${bookmark.rating}
-  <p>★★★★★</p>
+  <button type="submit" id='expand'>Expand</button>
+  <p>${rating}</p>
+</li>`;
+};
+
+const generateExpandedBookmarkElement = function (bookmark) {
+  let rating = generateRatingStars(bookmark);
+
+  return `<li class="bookmark-list-item" data-item-id="${bookmark.id}">
+  <span>${bookmark.title}</span>
+  <span>${bookmark.url}</span>
+  <button type="submit" id='condense'>Close</button>
+  <p>${bookmark.rating}</p>
+  <p>${bookmark.desc}</p>
 </li>`;
 };
 
@@ -42,7 +52,20 @@ const generateNewBookmarkView = function () {
     <input id="link-url" type="text" name="url" >
 
     <label class='item' for="link-description">Description:</label>
-    <textarea id="link-description" name="desc"></textarea>
+    <textarea id="link-desc" name="desc"></textarea>
+
+    <h3>Rating:</h3>
+      
+      <input name="rating" type="radio" value="1">
+       <label for="1">1</label>
+      <input name="rating" type="radio" value="2">
+       <label for="2">2</label>
+      <input name="rating" type="radio" value="3">
+       <label for="3">3</label>
+      <input name="rating" type="radio" value="4">
+       <label for="4">4</label>
+      <input name="rating" type="radio" value="5">
+       <label for="5">5</label>
 
     <button class='item' type="submit" id='cancel'>Cancel</button>
     <button class='item' type="submit" id='create'>Create</button>
@@ -83,8 +106,7 @@ const handleNewBookmarkView = function () {
   // New bookmark page button
   $('main').on('click', '#new', event => {
     event.preventDefault();
-    const newBookmark = generateNewBookmarkView();
-    $('main').html(newBookmark);
+    $('main').html(generateNewBookmarkView());
   });
 };
 
@@ -99,13 +121,13 @@ const cancelNewBookmarkView = function () {
 const handleNewBookmarkSubmit = function () {
   $('main').on('click', '#create', event => {
     event.preventDefault();
-    
+
     const newTitle = $('#link-title').val();
     const newUrl = $('#link-url').val();
-    const newBookmark = {newTitle, newUrl};
+    const newDesc = $('#link-desc').val();
+    const newRating = $('input:radio[name=rating]:checked').val();
 
-    console.log(newBookmark);
-    api.createBookmark(newTitle, newUrl)
+    api.createBookmark(newTitle, newUrl, newDesc, newRating)
       .then((newEntry) => {
         store.addBookmark(newEntry);
         render();
@@ -114,26 +136,68 @@ const handleNewBookmarkSubmit = function () {
         store.setError(error.message);
         renderError();
       });
-    
+
   });
 
 };
 
+const handleExpandedView = function () {
+  $('main').on('click', '#expand', event => {
+    event.preventDefault();
+    const id = getBookmarkIdFromElement(event.currentTarget);
+    const bookmark = store.findById(id);
+    $('main').html(generateExpandedBookmarkElement(bookmark));
+  });
+};
+
+const handleCondenseExpandedView = function () {
+  $('main').on('click', '#condense', event => {
+    event.preventDefault();
+    render();
+  });
+};
+
+/******************* HELPER FUNCTIONS  ************************/
+const getBookmarkIdFromElement = function (bookmark) {
+  return $(bookmark).closest('.bookmark-list-item').data('item-id');
+};
+
+const generateRatingStars = function (bookmark) {
+  let rating = '';
+  switch (bookmark.rating) {
+    case 5:
+      rating = '★★★★★';
+      break;
+    case 4:
+      rating = '★★★★☆';
+      break;
+    case 3:
+      rating = '★★★☆☆';
+      break;
+    case 2:
+      rating = '★★☆☆☆';
+      break;
+    case 1:
+      rating = '★☆☆☆☆';
+      break;
+    default:
+      rating = '☆☆☆☆☆';
+  }
+  return rating;
+};
+
 /******************* RENDER FUNCTIONS  ************************/
+//Main render function
 const render = function () {
   renderError();
   defaultView();
 };
 
+//Default view
 const defaultView = function () {
-  // render the BOOKMARKS in the DOM
-
   let bookmarks = [...store.bookmarks];
-  const bookmarkItemsString = generateBookmarkItemsString(bookmarks);
-  const defaultView = generateDefaultView();
-
   // insert that HTML into the DOM
-  $('main').html(defaultView + bookmarkItemsString);
+  $('main').html(generateDefaultView() + generateBookmarkItemsString(bookmarks));
 };
 
 const generateBookmarkItemsString = function (bookmarkList) {
@@ -145,6 +209,8 @@ const eventListeners = function () {
   handleNewBookmarkView();
   cancelNewBookmarkView();
   handleNewBookmarkSubmit();
+  handleExpandedView();
+  handleCondenseExpandedView();
 };
 
 

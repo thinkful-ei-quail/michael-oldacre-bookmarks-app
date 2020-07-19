@@ -34,10 +34,10 @@ const bookmarks = [
 ];
 let error = null;
 let filter = 0;
-//let hideCheckeditems = false;
+let expanded = false;
 
 const findById = function (id) {
-  return this.items.find(currentItem => currentItem.id === id);
+  return this.bookmarks.find(currentBookmark => currentBookmark.id === id);
 };
 
 const addBookmark = function (bookmark) {
