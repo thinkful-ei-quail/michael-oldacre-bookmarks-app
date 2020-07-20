@@ -54,13 +54,13 @@ function createBookmark(title, url, desc, rating) {
 }
 
 function updateItem(id, updateData) {
-  const newData = JSON.stringify(updateData);
-
+  const updatedBookmark = JSON.stringify(updateData);
+  console.log(updatedBookmark);
   return listApiFetch(`${BASE_URL}/bookmarks/${id}`,
     {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: newData
+      body: updatedBookmark
     });
 }
 

@@ -7,13 +7,15 @@ import store from './store';
 const generateDefaultView = function () {
   return `<form>
 <button type="submit" value="Submit" id='new'>New</button>
-<select id="filter" name="filter">
-  <option value="five">5 Star</option>
-  <option value="four">4 Star</option>
-  <option value="three">3 Star</option>
-  <option value="two">2 Start</option>
-  <option value="one">1 Start</option>
-  <option value="clear">Clear</option>
+<label for='filter'>Filter by rating:</label>
+<select id="filter" name='filter'>
+  <option value="">Select</option>
+  <option value="5">5 Star</option>
+  <option value="4">4 Star</option>
+  <option value="3">3 Star</option>
+  <option value="2">2 Star</option>
+  <option value="1">1 Star</option>
+  <option value="0">Clear</option>
 </select>
 </form>`;
 
@@ -24,21 +26,64 @@ const generateBookmarkElement = function (bookmark) {
 
   return `<li class="bookmark-list-item" data-item-id="${bookmark.id}">
   <span>${bookmark.title}</span>
-  <button type="submit" id='expand'>Expand</button>
+  <button class='item' type="submit" id='expand'>Expand</button>
+  <button class='item' type="submit" id='delete'>Delete</button>
   <p>${rating}</p>
 </li>`;
 };
 
-const generateExpandedBookmarkElement = function (bookmark) {
+const generateExpandedBookmarkElementView = function (bookmark) {
   let rating = generateRatingStars(bookmark);
 
   return `<li class="bookmark-list-item" data-item-id="${bookmark.id}">
+  
   <span>${bookmark.title}</span>
   <span>${bookmark.url}</span>
-  <button type="submit" id='condense'>Close</button>
-  <p>${bookmark.rating}</p>
+  <button class='item' type="submit" id='condense'>Close</button>
+  <button class='item' type="submit" id='delete'>Delete</button>
+  <p>${rating}</p>
   <p>${bookmark.desc}</p>
-</li>`;
+
+
+  <div>
+      <button class='item' type="submit" id='edit'>Edit</button>
+    </div>
+  </li>`;
+};
+
+const generateEditBookmarkElementView = function (bookmark) {
+
+  return `<h2>Edit Bookmark</h2>
+  <li class="bookmark-list-item" data-item-id="${bookmark.id}">
+    <form class='edit-bookmark'>
+    <label class='item' for="link-title">Title:</label><br>
+    <input id="link-title" type="text" name="title" value='${bookmark.title}'>
+
+    <label class='item' for="link-url">Link:</label><br>
+    <input id="link-url" type="text" name="url" value='${bookmark.url}' >
+
+    <label class='item' for="link-description">Description:</label>
+    <textarea id="link-desc" name="desc">${bookmark.desc}</textarea>
+
+    <h3>Rating:</h3>
+      
+      <input name="editRating" type="radio" value="1">
+       <label for="1">1</label>
+      <input name="editRating" type="radio" value="2">
+       <label for="2">2</label>
+      <input name="editRating" type="radio" value="3">
+       <label for="3">3</label>
+      <input name="editRating" type="radio" value="4">
+       <label for="4">4</label>
+      <input name="editRating" type="radio" value="5">
+       <label for="5">5</label>
+
+    <button class='item' type="submit" id='cancel'>Cancel</button>
+    <button class='item' type="submit" id='update'>Update</button>
+  </form>
+  </li>`
+  ;
+
 };
 
 const generateNewBookmarkView = function () {
@@ -69,8 +114,6 @@ const generateNewBookmarkView = function () {
 
     <button class='item' type="submit" id='cancel'>Cancel</button>
     <button class='item' type="submit" id='create'>Create</button>
-    
-
   </form>`;
 };
 
@@ -141,16 +184,84 @@ const handleNewBookmarkSubmit = function () {
 
 };
 
+//Filter bookmarks on default view
+
+const handleFilterView = function () {
+  $('main').on('change', '#filter', event => {
+    event.preventDefault();
+    let filter = parseInt($('option:selected').val());
+    let bookmarks = [...store.bookmarks];
+    let filterView =[];
+    console.log(filter);
+    
+    if(filter === 0)
+    {filterView = bookmarks;}
+    else{filterView = bookmarks.filter(bookmark => bookmark.rating === filter);}
+          
+    console.log(filterView);
+    filteredView(filterView);
+  });
+};
+
+// Delete a bookmark
+const handleDeletedBookmarkClick = function () {
+  $('main').on('click', '#delete', event => {
+    event.preventDefault();
+    const id = getBookmarkIdFromElement(event.currentTarget);
+    api.deleteItem(id).then(() => {
+      store.findAndDelete(id);
+      defaultView();
+    }).catch((error) => {
+      console.log(error);
+      store.setError(error.message);
+      alert(error.message);
+      renderError();
+    });
+  });
+};
+
+
+//Expanded and condensed views
 const handleExpandedView = function () {
   $('main').on('click', '#expand', event => {
     event.preventDefault();
     const id = getBookmarkIdFromElement(event.currentTarget);
     const bookmark = store.findById(id);
-    $('main').html(generateExpandedBookmarkElement(bookmark));
+    $('main').html(generateExpandedBookmarkElementView(bookmark));
   });
 };
 
-const handleCondenseExpandedView = function () {
+const enableEditView = function () {
+  $('main').on('click', '#edit', event => {
+    event.preventDefault(); 
+    const id = getBookmarkIdFromElement(event.currentTarget);
+    const bookmark = store.findById(id);
+    $('main').html(generateEditBookmarkElementView(bookmark));
+  });
+};
+
+const handleEditBookmarkItemSubmit = function () {
+  $('main').on('click', '#update', event => {
+    event.preventDefault();
+    const id = getBookmarkIdFromElement(event.currentTarget);
+    
+    const editTitle = $('#link-title').val();
+    const editUrl = $('#link-url').val();
+    const editDesc = $('#link-desc').val();
+    const editRating = $('input:radio[name=editRating]:checked').val();
+
+    api.updateItem(id, {title: editTitle, url: editUrl, desc: editDesc, rating: editRating})
+      .then(() =>{store.findAndUpdate(id, {title: editTitle, url: editUrl, desc: editDesc, rating: editRating});
+        render();
+      }).catch((error) =>{
+        console.log(error);
+        store.setError(error.message);
+        renderError();
+      });
+  });
+};
+
+const handleCloseExpandedView = function () {
   $('main').on('click', '#condense', event => {
     event.preventDefault();
     render();
@@ -195,8 +306,14 @@ const render = function () {
 
 //Default view
 const defaultView = function () {
+  $('option:selected').val('');
   let bookmarks = [...store.bookmarks];
+  console.log(bookmarks);
   // insert that HTML into the DOM
+  $('main').html(generateDefaultView() + generateBookmarkItemsString(bookmarks));
+};
+
+const filteredView = function (bookmarks){
   $('main').html(generateDefaultView() + generateBookmarkItemsString(bookmarks));
 };
 
@@ -210,7 +327,12 @@ const eventListeners = function () {
   cancelNewBookmarkView();
   handleNewBookmarkSubmit();
   handleExpandedView();
-  handleCondenseExpandedView();
+  handleCloseExpandedView();
+  handleDeletedBookmarkClick();
+  enableEditView();
+  handleEditBookmarkItemSubmit();
+  handleFilterView(); 
+  handleCloseError();
 };
 
 

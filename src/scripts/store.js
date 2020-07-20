@@ -1,40 +1,7 @@
-const bookmarks = [
-  {
-    id: 'x56w',
-    title: 'Title 1',
-    rating: 3,
-    url: 'http://www.title1.com',
-    description: 'lorem ipsum dolor sit',
-    expanded: false
-  },
-  {
-    id: '6ffw',
-    title: 'Title 2',
-    rating: 5,
-    url: 'http://www.title2.com',
-    description: 'dolorum tempore deserunt',
-    expanded: false
-  },
-  {
-    id: 'x56w',
-    title: 'Title 1',
-    rating: 3,
-    url: 'http://www.title1.com',
-    description: 'lorem ipsum dolor sit',
-    expanded: false
-  },
-  {
-    id: '7ddr',
-    title: 'Title 11',
-    rating: 5,
-    url: 'http://www.title11.com',
-    description: 'lorem ipsum dolor',
-    expanded: true
-  }
-];
+const bookmarks = [];
 let error = null;
 let filter = 0;
-let expanded = false;
+
 
 const findById = function (id) {
   return this.bookmarks.find(currentBookmark => currentBookmark.id === id);
@@ -46,18 +13,15 @@ const addBookmark = function (bookmark) {
 
 
 const findAndUpdate = function (id, newData) {
+  console.log(newData);
   const currentBookmark = this.findById(id);
   Object.assign(currentBookmark, newData);
 
 };
 
 const findAndDelete = function (id) {
-  this.bookmarks = this.addBookmark.filter(currentBookmark => currentBookmark.id !== id);
+  this.bookmarks = this.bookmarks.filter(currentBookmark => currentBookmark.id !== id);
 };
-
-/* const toggleCheckedFilter = function () {
-  this.hideCheckedItems = !this.hideCheckedItems;
-}; */
 
 const setError = function (error) {
   this.error = error;
@@ -65,12 +29,10 @@ const setError = function (error) {
 
 export default {
   bookmarks,
-  //hideCheckeditems,
   findById,
   addBookmark,
   findAndUpdate,
   findAndDelete,
-  //toggleCheckedFilter,
   error,
   setError
 };
