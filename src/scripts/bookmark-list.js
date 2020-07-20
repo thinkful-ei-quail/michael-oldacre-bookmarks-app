@@ -25,10 +25,10 @@ const generateBookmarkElement = function (bookmark) {
   let rating = generateRatingStars(bookmark);
 
   return `<li class="bookmark-list-item item" data-item-id="${bookmark.id}">
-  <span>Title:</span>  <span>${bookmark.title}</span>
+  <h4><span><span>Title:</span>${bookmark.title}</span></h4>  
+  <p><span>Rating:</span><br>${rating}</p>
   <button class='item' type="submit" id='expand'>More Info</button>
   <button class='item' type="submit" id='delete'>Delete</button>
-  <span>Rating:${rating}</span>
 </li>`;
 };
 
@@ -37,17 +37,17 @@ const generateExpandedBookmarkElementView = function (bookmark) {
 
   return `<li class="bookmark-list-item item" data-item-id="${bookmark.id}">
   
-  <span>${bookmark.title}</span>
-  <span>${bookmark.url}</span>
-  <button class='item' type="submit" id='condense'>Close</button>
-  <button class='item' type="submit" id='delete'>Delete</button>
-  <p>${rating}</p>
+  <span><span>Title:</span><br>${bookmark.title}</span>
+  <p><span>Visit Link:</span><br><a href="${bookmark.url}" target="_blank">${bookmark.url}</a></p>  
+  <p><span>Rating:</span><br>${rating}</p>
   <p>${bookmark.desc}</p>
 
 
   <div>
       <button class='item' type="submit" id='edit'>Edit</button>
-    </div>
+      <button class='item' type="submit" id='condense'>Close</button>
+      <button class='item' type="submit" id='delete'>Delete</button>
+  </div>
   </li>`;
 };
 
