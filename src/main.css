@@ -5,19 +5,42 @@
 
 .bookmark-list-item{
   border: 1px solid black;
+  border-radius: 5px;
+  width: 50%;
+}
+
+.item{
+  flex: 1;
+  margin: 10px;
+  align-content: center;
+  flex-direction: row;
+  justify-content: space-evenly;
+  
 }
 
 .rating{
-  display: inline;
+  
   position: relative;
   padding-left: 35px;
 }
 
 span{
-  padding-right: 120px;
+  justify-content: space-evenly;
+  
 }
 
 main{
   display: flex;
   flex-direction: column;
+  list-style: none;
+}
+
+header{
+  background-color: black;
+  color: aliceblue;
+  margin-bottom: 40px;
+}
+
+@media all and (min-width: 600px) {
+
 }

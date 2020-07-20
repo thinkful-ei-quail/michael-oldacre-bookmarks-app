@@ -5,8 +5,8 @@ import store from './store';
 
 /******************* TEMPLATE FUNCTIONS ************************/
 const generateDefaultView = function () {
-  return `<form>
-<button type="submit" value="Submit" id='new'>New</button>
+  return `<form class='item'>
+<button type="submit" value="Submit" id='new'>New Bookmark</button>
 <label for='filter'>Filter by rating:</label>
 <select id="filter" name='filter'>
   <option value="">Select</option>
@@ -24,18 +24,18 @@ const generateDefaultView = function () {
 const generateBookmarkElement = function (bookmark) {
   let rating = generateRatingStars(bookmark);
 
-  return `<li class="bookmark-list-item" data-item-id="${bookmark.id}">
-  <span>${bookmark.title}</span>
-  <button class='item' type="submit" id='expand'>Expand</button>
+  return `<li class="bookmark-list-item item" data-item-id="${bookmark.id}">
+  <span>Title:</span>  <span>${bookmark.title}</span>
+  <button class='item' type="submit" id='expand'>More Info</button>
   <button class='item' type="submit" id='delete'>Delete</button>
-  <p>${rating}</p>
+  <span>Rating:${rating}</span>
 </li>`;
 };
 
 const generateExpandedBookmarkElementView = function (bookmark) {
   let rating = generateRatingStars(bookmark);
 
-  return `<li class="bookmark-list-item" data-item-id="${bookmark.id}">
+  return `<li class="bookmark-list-item item" data-item-id="${bookmark.id}">
   
   <span>${bookmark.title}</span>
   <span>${bookmark.url}</span>
@@ -54,7 +54,7 @@ const generateExpandedBookmarkElementView = function (bookmark) {
 const generateEditBookmarkElementView = function (bookmark) {
 
   return `<h2>Edit Bookmark</h2>
-  <li class="bookmark-list-item" data-item-id="${bookmark.id}">
+  <li class="bookmark-list-item item" data-item-id="${bookmark.id}">
     <form class='edit-bookmark'>
     <label class='item' for="link-title">Title:</label><br>
     <input id="link-title" type="text" name="title" value='${bookmark.title}'>
