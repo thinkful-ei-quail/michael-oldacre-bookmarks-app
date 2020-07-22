@@ -276,23 +276,23 @@ const getBookmarkIdFromElement = function (bookmark) {
 const generateRatingStars = function (bookmark) {
   let rating = '';
   switch (bookmark.rating) {
-    case 5:
-      rating = '★★★★★';
-      break;
-    case 4:
-      rating = '★★★★☆';
-      break;
-    case 3:
-      rating = '★★★☆☆';
-      break;
-    case 2:
-      rating = '★★☆☆☆';
-      break;
-    case 1:
-      rating = '★☆☆☆☆';
-      break;
-    default:
-      rating = '☆☆☆☆☆';
+  case 5:
+    rating = '★★★★★';
+    break;
+  case 4:
+    rating = '★★★★☆';
+    break;
+  case 3:
+    rating = '★★★☆☆';
+    break;
+  case 2:
+    rating = '★★☆☆☆';
+    break;
+  case 1:
+    rating = '★☆☆☆☆';
+    break;
+  default:
+    rating = '☆☆☆☆☆';
   }
   return rating;
 };
